@@ -15,9 +15,7 @@ footer { bottom: 0; text-align: center; border-top: 3px solid #fff; }
 header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; letter-spacing: 1px; }
 .cart-icon { position: relative; cursor: pointer; }
 .cart-badge { position: absolute; top: -8px; right: -10px; background: #ffc107; color: #000; border-radius: 50%; padding: 3px 8px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-.filter-btns { text-align: center; margin-bottom: 20px; }
-.filter-btns button { margin: 0 5px; border-radius: 10px; padding: 0.5rem 1rem; border: none; font-weight: bold; transition: 0.3s; }
-.filter-btns button.active, .filter-btns button:hover { background: #28a745; color: #fff; }
+.filter-container { margin-bottom: 20px; }
 .product-card { border: 2px solid #5cd65c; border-radius: 15px; margin-bottom: 2rem; padding: 1.5rem; background: #fff; box-shadow: 0 6px 12px rgba(0,0,0,0.15); text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
 .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 .product-card img { border-radius: 12px; margin-bottom: 1rem; border: 1px solid #ddd; }
@@ -37,6 +35,9 @@ header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; letter-spacing: 1px
 .form-control { border: 1px solid #28a745; border-radius: 8px; margin-bottom: 12px; padding: 0.6rem; }
 .remove-btn { color: #dc3545; cursor: pointer; font-size: 1.2rem; transition: color 0.3s; }
 .remove-btn:hover { color: #ff6b6b; }
+@media (max-width: 576px) {
+  .filter-btns { display: none; }
+}
 </style>
 </head>
 <body>
@@ -49,11 +50,13 @@ header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; letter-spacing: 1px
 </header>
 
 <main class="container mt-3">
-<div class="filter-btns">
-<button class="active" onclick="filterCategory('all')">Tous</button>
-<button onclick="filterCategory('fruits')">Fruits</button>
-<button onclick="filterCategory('legumes')">Légumes</button>
-<button onclick="filterCategory('unite')">Unités</button>
+<div class="filter-container text-center">
+  <select id="filter-select" class="form-select w-50 mx-auto">
+    <option value="all" selected>Tous</option>
+    <option value="fruits">Fruits</option>
+    <option value="legumes">Légumes</option>
+    <option value="unite">Unités</option>
+  </select>
 </div>
 <div id="products-list" class="row"></div>
 </main>
@@ -97,12 +100,12 @@ let cart = [];
 let quantities = {};
 products.forEach(p => quantities[p.id] = 1);
 
-function renderProducts(filter='all') {
+function renderProducts(filter='all'){
 const container = document.getElementById("products-list");
-container.innerHTML = "";
-products.filter(p => filter==='all' || p.category===filter).forEach(p => {
+container.innerHTML="";
+products.filter(p => filter==='all' || p.category===filter).forEach(p=>{
 let qtyDisplay = p.category==='unite'?`${quantities[p.id]} unité(s)`:`${quantities[p.id]} × 250g = ${quantities[p.id]*250}g`;
-container.innerHTML += `
+container.innerHTML+=`
 <div class="col-12">
 <div class="product-card">
 <img src="${p.img}" alt="${p.name}" class="img-fluid">
@@ -119,11 +122,9 @@ container.innerHTML += `
 });
 }
 
-function filterCategory(cat){
-document.querySelectorAll('.filter-btns button').forEach(btn=>btn.classList.remove('active'));
-event.target.classList.add('active');
-renderProducts(cat);
-}
+document.getElementById('filter-select').addEventListener('change', ()=>{
+renderProducts(document.getElementById('filter-select').value);
+});
 
 function changeQty(id, delta){
 if(!quantities[id]) quantities[id]=1;
@@ -152,11 +153,7 @@ return;
 cart.push({...product, qty, grams});
 updateCartCount();
 renderCart();
-Swal.fire({
-icon:'success',
-title:'Ajouté au panier',
-text:`${qty} ${product.category==='unite'?'unité(s)':'× 250g'} (${grams}${product.category==='unite'?'':'g'}) de ${product.name}`
-});
+Swal.fire({icon:'success', title:'Ajouté au panier', text:`${qty} ${product.category==='unite'?'unité(s)':'× 250g'} (${grams}${product.category==='unite'?'':'g'}) de ${product.name}`});
 }
 
 function updateCartCount(){document.getElementById("cart-count").textContent=cart.length;}
