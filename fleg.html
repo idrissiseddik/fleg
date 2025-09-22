@@ -23,6 +23,7 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 .product-card img{border-radius:12px;margin-bottom:1rem;border:1px solid #ddd;}
 .product-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:#28a745;}
 .price{font-size:1rem;color:#dc3545;margin-bottom:0.6rem;font-weight:bold;}
+.total-price{font-size:0.95rem;color:#000;font-weight:600;margin-bottom:0.6rem;}
 .quantity-control{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:1rem;}
 .quantity-control button{background:#28a745;color:#fff;border:none;border-radius:8px;width:36px;height:36px;font-size:1.2rem;}
 .quantity-control button:hover{background:#1e7e34;}
@@ -79,6 +80,7 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 <div class="modal-body">
 <div id="cart-items"></div>
 <hr>
+<div id="cart-total" class="fw-bold text-end text-success mb-2"></div>
 <input type="text" class="form-control" id="client-name" placeholder="Nom complet">
 <input type="text" class="form-control" id="client-address" placeholder="Adresse">
 <textarea class="form-control" id="client-comment" placeholder="Commentaire"></textarea>
@@ -94,7 +96,6 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 const products=[
 {id:1,name:"Pomme",price:5,img:"https://via.placeholder.com/400x250?text=Pomme",category:'fruits'},
 {id:2,name:"Banane",price:5.49,img:"images/banane.jpg",category:'fruits'},
-
 {id:3,name:"Carotte",price:2.48,img:"images/carotte.jpg",category:'legumes'},
 {id:4,name:"Tomate",price:1.74,img:"images/tomate.jpg",category:'legumes'},
 {id:5,name:"Pomme de terre blanche",price:1.88,img:"images/pdb.jpg",category:'legumes'},
@@ -105,7 +106,6 @@ const products=[
 {id:10,name:"Gombo",price:15.95,img:"images/gombo.jpg",category:'legumes'},
 {id:11,name:"Poivron vert",price:2.60,img:"images/pvert.jpg",category:'legumes'},
 {id:12,name:"Haricots vert",price:8.25,img:"images/hvert.jpg",category:'legumes'},
-
 {id:13,name:"Oeuf",price:3,img:"https://via.placeholder.com/400x250?text=Oeuf",category:'unite'},
 {id:14,name:"Citron",price:2,img:"https://via.placeholder.com/400x250?text=Citron",category:'unite'}
 ];
@@ -116,12 +116,14 @@ const c=document.getElementById("products-list");c.innerHTML="";
 products.filter(p=>filter==='all'||p.category===filter).forEach(p=>{
 let cls=p.category+"-card";
 let qtyDisplay=p.category==='unite'?`${quantities[p.id]} unité(s)`:`${quantities[p.id]} × 250g = ${quantities[p.id]*250}g`;
+let totalPrice=(p.category==='unite'?p.price*quantities[p.id]:p.price*quantities[p.id]).toFixed(2);
 c.innerHTML+=`
 <div class="col-12">
 <div class="product-card ${cls}" id="card-${p.id}">
 <img src="${p.img}" alt="${p.name}" class="img-fluid">
 <div class="product-title">${p.name}</div>
 <div class="price">${p.price} DH ${p.category==='unite'?'/ unité':'/ 250g'}</div>
+<div class="total-price">Total: ${totalPrice} DH</div>
 <div class="quantity-control">
 <button onclick="changeQty(${p.id},-1)">-</button>
 <span id="qty-${p.id}" class="quantity-display">${qtyDisplay}</span>
@@ -139,15 +141,21 @@ let text=sel==='all'?'Tous les produits':sel==='fruits'?'Fruits':sel==='legumes'
 Swal.fire({title:'Filtre appliqué',text:`Vous filtrez: ${text}`,icon:'info',timer:1200,showConfirmButton:false});
 });
 
-function changeQty(id,d){quantities[id]=Math.max(1,(quantities[id]||1)+d);
+function changeQty(id,d){
+quantities[id]=Math.max(1,(quantities[id]||1)+d);
 const p=products.find(pr=>pr.id===id);
 let qtyDisplay=p.category==='unite'?`${quantities[id]} unité(s)`:`${quantities[id]} × 250g = ${quantities[id]*250}g`;
-document.getElementById(`qty-${id}`).textContent=qtyDisplay;}
+document.getElementById(`qty-${id}`).textContent=qtyDisplay;
+let totalPrice=(p.price*quantities[id]).toFixed(2);
+document.querySelector(`#card-${id} .total-price`).textContent=`Total: ${totalPrice} DH`;
+}
 
 function addToCart(id){
-const p=products.find(pr=>pr.id===id);const qty=quantities[id];const grams=p.category==='unite'?qty:qty*250;
+const p=products.find(pr=>pr.id===id);const qty=quantities[id];
+const grams=p.category==='unite'?qty:qty*250;
 if(cart.find(x=>x.id===id)){Swal.fire({title:'Déjà au panier',text:`${p.name} est déjà dans le panier`,icon:'warning'});return;}
-cart.push({...p,qty,grams});updateCartCount();renderCart();
+cart.push({...p,qty,grams});
+updateCartCount();renderCart();
 document.getElementById(`card-${id}`).classList.add('added');
 setTimeout(()=>{document.getElementById(`card-${id}`).classList.remove('added');},500);
 Swal.fire({icon:'success',title:'Ajouté!',text:`${p.name} ajouté avec ${p.category==='unite'?qty+' unité(s)':grams+'g'}`});
@@ -156,13 +164,17 @@ Swal.fire({icon:'success',title:'Ajouté!',text:`${p.name} ajouté avec ${p.cate
 function updateCartCount(){document.getElementById("cart-count").textContent=cart.length;}
 
 function renderCart(){
-const c=document.getElementById("cart-items");c.innerHTML="";
+const c=document.getElementById("cart-items");c.innerHTML="";let total=0;
 cart.forEach((item,i)=>{
+let subtotal=item.price*item.qty;total+=subtotal;
 c.innerHTML+=`<div class="d-flex align-items-center mb-2 border-bottom pb-2">
 <img src="${item.img}" width="60" class="me-2 rounded">
-<div><strong>${item.name}</strong><br>${item.qty} ${item.category==='unite'?'unité(s)':'× 250g = '+item.grams+'g'}<br><span class="text-success">${item.price} DH ${item.category==='unite'?'/ unité':'/ 250g'}</span></div>
+<div><strong>${item.name}</strong><br>${item.qty} ${item.category==='unite'?'unité(s)':'× 250g = '+item.grams+'g'}<br>
+<span class="text-success">${item.price} DH ${item.category==='unite'?'/ unité':'/ 250g'}</span><br>
+<span class="fw-bold text-dark">Sous-total: ${subtotal.toFixed(2)} DH</span></div>
 <i class="fas fa-trash remove-btn ms-auto" onclick="confirmRemove(${i})"></i></div>`;
 });
+document.getElementById("cart-total").textContent=`Total général: ${total.toFixed(2)} DH`;
 }
 
 function confirmRemove(i){
@@ -175,15 +187,20 @@ function validateOrder(){
 if(cart.length===0){Swal.fire('Panier vide','Ajoutez un produit','warning');return;}
 const n=document.getElementById('client-name').value.trim();
 const a=document.getElementById('client-address').value.trim();
-const c=document.getElementById('client-comment').value.trim(); // ✅ Récupération du commentaire
-
+const c=document.getElementById('client-comment').value.trim();
 if(!n||!a){Swal.fire('Champs manquants','Nom et adresse requis','warning');return;}
-let msg=`Bonjour,\nCommande:\n`;cart.forEach((it,i)=>{let q=it.category==='unite'?`${it.qty} unité(s)`:it.grams+"g";msg+=`${i+1}. ${it.name} = ${q}\n`;});
-msg+=`Nom: ${n}\nAdresse: ${a}`;
-if(c){msg+=`\nCommentaire: ${c}`;} // ✅ Ajout du commentaire
-const encoded=encodeURIComponent(msg);window.open(`https://wa.me/212608975435?text=${encoded}`);
-Swal.fire('Merci!','Votre commande sera préparée.','success');cart=[];updateCartCount();renderCart();
-document.getElementById('client-name').value='';document.getElementById('client-address').value='';document.getElementById('client-comment').value='';
+let msg=`Bonjour,\nCommande:\n`;let total=0;
+cart.forEach((it,i)=>{let q=it.category==='unite'?`${it.qty} unité(s)`:it.grams+"g";let st=it.price*it.qty;total+=st;
+msg+=`${i+1}. ${it.name} = ${q} | ${st.toFixed(2)} DH\n`;});
+msg+=`Total général: ${total.toFixed(2)} DH\nNom: ${n}\nAdresse: ${a}`;
+if(c){msg+=`\nCommentaire: ${c}`;}
+const encoded=encodeURIComponent(msg);
+window.open(`https://wa.me/212608975435?text=${encoded}`);
+Swal.fire('Merci!','Votre commande sera préparée.','success');
+cart=[];updateCartCount();renderCart();
+document.getElementById('client-name').value='';
+document.getElementById('client-address').value='';
+document.getElementById('client-comment').value='';
 }
 
 document.addEventListener('DOMContentLoaded',()=>renderProducts());
