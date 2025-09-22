@@ -93,11 +93,21 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 <script>
 const products=[
 {id:1,name:"Pomme",price:5,img:"https://via.placeholder.com/400x250?text=Pomme",category:'fruits'},
-{id:2,name:"Banane",price:6,img:"https://via.placeholder.com/400x250?text=Banane",category:'fruits'},
-{id:3,name:"Carotte",price:4,img:"https://via.placeholder.com/400x250?text=Carotte",category:'legumes'},
-{id:4,name:"Tomate",price:5,img:"https://via.placeholder.com/400x250?text=Tomate",category:'legumes'},
-{id:5,name:"Oeuf",price:3,img:"https://via.placeholder.com/400x250?text=Oeuf",category:'unite'},
-{id:6,name:"Citron",price:2,img:"https://via.placeholder.com/400x250?text=Citron",category:'unite'}
+{id:2,name:"Banane",price:5.49,img:"images/banane.jpg",category:'fruits'},
+
+{id:3,name:"Carotte",price:2.48,img:"images/carotte.jpg",category:'legumes'},
+{id:4,name:"Tomate",price:1.74,img:"images/tomate.jpg",category:'legumes'},
+{id:5,name:"Pomme de terre blanche",price:1.88,img:"images/pdb.jpg",category:'legumes'},
+{id:6,name:"Concombre court",price:2.48,img:"images/concombre.jpg",category:'legumes'},
+{id:7,name:"Courgette blanche",price:2.48,img:"images/corb.jpg",category:'legumes'},
+{id:8,name:"Aubergine ronde",price:2.10,img:"images/aubergine.jpg",category:'legumes'},
+{id:9,name:"Coings",price:4.73,img:"images/coing.jpg",category:'legumes'},
+{id:10,name:"Gombo",price:15.95,img:"images/gombo.jpg",category:'legumes'},
+{id:11,name:"Poivron vert",price:2.60,img:"images/pvert.jpg",category:'legumes'},
+{id:12,name:"Haricots vert",price:8.25,img:"images/hvert.jpg",category:'legumes'},
+
+{id:13,name:"Oeuf",price:3,img:"https://via.placeholder.com/400x250?text=Oeuf",category:'unite'},
+{id:14,name:"Citron",price:2,img:"https://via.placeholder.com/400x250?text=Citron",category:'unite'}
 ];
 let cart=[];let quantities={};products.forEach(p=>quantities[p.id]=1);
 
@@ -165,9 +175,12 @@ function validateOrder(){
 if(cart.length===0){Swal.fire('Panier vide','Ajoutez un produit','warning');return;}
 const n=document.getElementById('client-name').value.trim();
 const a=document.getElementById('client-address').value.trim();
+const c=document.getElementById('client-comment').value.trim(); // ✅ Récupération du commentaire
+
 if(!n||!a){Swal.fire('Champs manquants','Nom et adresse requis','warning');return;}
 let msg=`Bonjour,\nCommande:\n`;cart.forEach((it,i)=>{let q=it.category==='unite'?`${it.qty} unité(s)`:it.grams+"g";msg+=`${i+1}. ${it.name} = ${q}\n`;});
 msg+=`Nom: ${n}\nAdresse: ${a}`;
+if(c){msg+=`\nCommentaire: ${c}`;} // ✅ Ajout du commentaire
 const encoded=encodeURIComponent(msg);window.open(`https://wa.me/212608975435?text=${encoded}`);
 Swal.fire('Merci!','Votre commande sera préparée.','success');cart=[];updateCartCount();renderCart();
 document.getElementById('client-name').value='';document.getElementById('client-address').value='';document.getElementById('client-comment').value='';
