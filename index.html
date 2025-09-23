@@ -96,29 +96,31 @@
 <body>
 
 <header>
-  Bienvenue sur notre boutique
+  Bienvenue dans votre espace <br>
+- Mon Ordre de Préparation -
 </header>
 
 <main>
   <div class="category-card fruits" onclick="goToCategory('fleg.html')">
-    <img src="https://via.placeholder.com/100?text=🍎" alt="Fruits & Légumes">
+    <img src="images/fleg.jpg" alt="Fruits & Légumes">
     Fruits & Légumes
   </div>
   <div class="category-card boucherie" onclick="goToCategory('bv.html')">
-    <img src="https://via.placeholder.com/100?text=🥩" alt="Boucherie & Volaille">
+    <img src="images/bovo.jpg" alt="Boucherie & Volaille">
     Boucherie & Volaille
   </div>
 </main>
 
 <footer>
-  Site créé par M.Seddik Elidrissi
+  MMS59.vercel.app <br> 
+Créé Par : M.Seddik Elidrissi
 </footer>
 
 <script>
 function goToCategory(url){
   Swal.fire({
     title: "Redirection",
-    text: "Vous allez être redirigé vers votre catégorie choisie.",
+    text: "Vous allez être redirigé vers votre rayon choisi.. Merci d'avoir utiliser MMS59.vercel.app!",
     icon: "info",
     confirmButtonText: "OK"
   }).then(()=>{
