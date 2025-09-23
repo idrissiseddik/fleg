@@ -14,7 +14,18 @@ header{top:0;display:flex;justify-content:space-between;align-items:center;backg
 footer{bottom:0;text-align:center;background:linear-gradient(90deg,#28a745,#5cd65c);border-top:3px solid #fff;}
 header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 .cart-icon{position:relative;cursor:pointer;}
-.cart-badge{position:absolute;top:-8px;right:-10px;background:#ffc107;color:#000;border-radius:50%;padding:3px 8px;font-size:0.85rem;font-weight:bold;}
+.cart-badge{
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #ffc107;
+  color: #000;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
 .filter-container{margin-bottom:20px;}
 .product-card{border:2px solid #28a745;border-radius:15px;margin-bottom:1.5rem;padding:1rem;background:#fff;text-align:center;box-shadow:0 6px 12px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s;}
 .product-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.2);}
@@ -38,7 +49,6 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 .form-control{border:1px solid #28a745;border-radius:8px;margin-bottom:12px;padding:0.6rem;}
 .remove-btn{color:#dc3545;cursor:pointer;font-size:1.2rem;}
 .remove-btn:hover{color:#ff6b6b;}
-/* Styles par catégorie */
 .fruits-card{border-color:#28a745;background:#e9fbe9;}
 .legumes-card{border-color:#ffc107;background:#fff9e6;}
 .unite-card{border-color:#007bff;background:#e6f0ff;}
@@ -47,10 +57,10 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 </head>
 <body>
 <header>
-<h1>Marché Fruits, Légumes & Unités</h1>
+<h1>Marché Fruits & Légumes</h1>
 <div class="cart-icon" data-bs-toggle="modal" data-bs-target="#cartModal">
-<i class="fas fa-shopping-cart fa-2x"></i>
-<span class="cart-badge" id="cart-count">0</span>
+  <i class="fas fa-shopping-cart fa-2x"></i>
+  <span class="cart-badge" id="cart-count">0</span>
 </div>
 </header>
 
@@ -67,7 +77,8 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 </main>
 
 <footer>
-&copy; 2025 Marché Fruits, Légumes & Unités - Tous droits réservés
+&copy; 2025 Marché Fruits & Légumes <br>
+Créé Par : M.Seddik ELidrissi
 </footer>
 
 <div class="modal fade" id="cartModal" tabindex="-1">
@@ -80,7 +91,6 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 <div class="modal-body">
 <div id="cart-items"></div>
 <hr>
-<div id="cart-total" class="fw-bold text-end text-success mb-2"></div>
 <input type="text" class="form-control" id="client-name" placeholder="Nom complet">
 <input type="text" class="form-control" id="client-address" placeholder="Adresse">
 <textarea class="form-control" id="client-comment" placeholder="Commentaire"></textarea>
@@ -93,30 +103,39 @@ header h1{font-size:1.4rem;font-weight:bold;margin:0;}
 </div>
 
 <script>
-const products=[
-{id:1,name:"Pomme",price:5,img:"https://via.placeholder.com/400x250?text=Pomme",category:'fruits'},
-{id:2,name:"Banane",price:5.49,img:"images/banane.jpg",category:'fruits'},
-{id:3,name:"Carotte",price:2.48,img:"images/carotte.jpg",category:'legumes'},
-{id:4,name:"Tomate",price:1.74,img:"images/tomate.jpg",category:'legumes'},
-{id:5,name:"Pomme de terre blanche",price:1.88,img:"images/pdb.jpg",category:'legumes'},
-{id:6,name:"Concombre court",price:2.48,img:"images/concombre.jpg",category:'legumes'},
-{id:7,name:"Courgette blanche",price:2.48,img:"images/corb.jpg",category:'legumes'},
-{id:8,name:"Aubergine ronde",price:2.10,img:"images/aubergine.jpg",category:'legumes'},
-{id:9,name:"Coings",price:4.73,img:"images/coing.jpg",category:'legumes'},
-{id:10,name:"Gombo",price:15.95,img:"images/gombo.jpg",category:'legumes'},
-{id:11,name:"Poivron vert",price:2.60,img:"images/pvert.jpg",category:'legumes'},
-{id:12,name:"Haricots vert",price:8.25,img:"images/hvert.jpg",category:'legumes'},
-{id:13,name:"Oeuf",price:3,img:"https://via.placeholder.com/400x250?text=Oeuf",category:'unite'},
-{id:14,name:"Citron",price:2,img:"https://via.placeholder.com/400x250?text=Citron",category:'unite'}
+const fruits = [
+{id:1,name:"Pomme",price:5,img:"https://via.placeholder.com/400x250?text=Pomme"},
+{id:2,name:"Banane",price:5.49,img:"images/banane.jpg"}
 ];
-let cart=[];let quantities={};products.forEach(p=>quantities[p.id]=1);
+const legumes = [
+{id:3,name:"Carotte",price:2.48,img:"images/carotte.jpg"},
+{id:4,name:"Tomate",price:1.74,img:"images/tomate.jpg"},
+{id:5,name:"Pomme de terre blanche",price:1.88,img:"images/pdb.jpg"},
+{id:6,name:"Concombre court",price:2.48,img:"images/concombre.jpg"},
+{id:7,name:"Courgette blanche",price:2.48,img:"images/corb.jpg"},
+{id:8,name:"Aubergine ronde",price:2.10,img:"images/aubergine.jpg"},
+{id:9,name:"Coings",price:4.73,img:"images/coing.jpg"},
+{id:10,name:"Gombo",price:15.95,img:"images/gombo.jpg"},
+{id:11,name:"Poivron vert",price:2.60,img:"images/pvert.jpg"},
+{id:12,name:"Haricots vert",price:8.25,img:"images/hvert.jpg"}
+];
+const unites = [
+{id:13,name:"Oeuf",price:3,img:"https://via.placeholder.com/400x250?text=Oeuf"},
+{id:14,name:"Citron",price:2,img:"https://via.placeholder.com/400x250?text=Citron"}
+];
+
+const products = [...fruits.map(p=>({...p, category:'fruits'})), 
+                  ...legumes.map(p=>({...p, category:'legumes'})), 
+                  ...unites.map(p=>({...p, category:'unite'}))];
+
+let cart=[]; let quantities={}; products.forEach(p=>quantities[p.id]=1);
 
 function renderProducts(filter='all'){
 const c=document.getElementById("products-list");c.innerHTML="";
 products.filter(p=>filter==='all'||p.category===filter).forEach(p=>{
 let cls=p.category+"-card";
 let qtyDisplay=p.category==='unite'?`${quantities[p.id]} unité(s)`:`${quantities[p.id]} × 250g = ${quantities[p.id]*250}g`;
-let totalPrice=(p.category==='unite'?p.price*quantities[p.id]:p.price*quantities[p.id]).toFixed(2);
+let totalPrice=(p.price*quantities[p.id]).toFixed(2);
 c.innerHTML+=`
 <div class="col-12">
 <div class="product-card ${cls}" id="card-${p.id}">
@@ -130,8 +149,7 @@ c.innerHTML+=`
 <button onclick="changeQty(${p.id},1)">+</button>
 </div>
 <button class="btn-add" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i> Ajouter</button>
-</div></div>`;
-});
+</div></div>`;});
 }
 
 document.getElementById('filter-select').addEventListener('change',()=>{
@@ -172,9 +190,7 @@ c.innerHTML+=`<div class="d-flex align-items-center mb-2 border-bottom pb-2">
 <div><strong>${item.name}</strong><br>${item.qty} ${item.category==='unite'?'unité(s)':'× 250g = '+item.grams+'g'}<br>
 <span class="text-success">${item.price} DH ${item.category==='unite'?'/ unité':'/ 250g'}</span><br>
 <span class="fw-bold text-dark">Sous-total: ${subtotal.toFixed(2)} DH</span></div>
-<i class="fas fa-trash remove-btn ms-auto" onclick="confirmRemove(${i})"></i></div>`;
-});
-document.getElementById("cart-total").textContent=`Total général: ${total.toFixed(2)} DH`;
+<i class="fas fa-trash remove-btn ms-auto" onclick="confirmRemove(${i})"></i></div>`;});
 }
 
 function confirmRemove(i){
