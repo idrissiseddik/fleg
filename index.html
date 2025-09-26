@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <style>
     body {
-      padding-top: 120px;
+      padding-top: 160px;
       padding-bottom: 70px;
     }
     header {
@@ -186,6 +186,100 @@
       color: #6c757d;
       margin-bottom: 5px;
     }
+    /* Bouton flottant pour revenir en haut */
+    .back-to-top {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .back-to-top:hover {
+      background-color: #218838;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .back-to-top:active {
+      transform: translateY(-1px);
+    }
+    /* Animation pour l'apparition du bouton */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .back-to-top.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    /* Styles pour la modale de contact */
+    .contact-icon {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+    }
+    .contact-icon:hover {
+      transform: scale(1.2);
+    }
+    .contact-modal .btn-whatsapp {
+      background-color: #25D366;
+      color: white;
+      border: none;
+    }
+    .contact-modal .btn-whatsapp:hover {
+      background-color: #128C7E;
+    }
+    .contact-modal .btn-sms {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+    }
+    .contact-modal .btn-sms:hover {
+      background-color: #0056b3;
+    }
+    .contact-modal .btn-call {
+      background-color: #28a745;
+      color: white;
+      border: none;
+    }
+    .contact-modal .btn-call:hover {
+      background-color: #218838;
+    }
+    .contact-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .contact-buttons .btn {
+      min-width: 120px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .contact-buttons .btn i {
+      margin-right: 8px;
+    }
+    .footer-contact {
+      margin-left: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .footer-contact:hover {
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body>
@@ -211,6 +305,11 @@
     <i class="fas fa-th-large"></i>
   </button>
 </div>
+
+<!-- Bouton flottant pour revenir en haut -->
+<button class="back-to-top" id="backToTop" title="Revenir en haut" onclick="scrollToTop()">
+  <i class="fas fa-chevron-up"></i>
+</button>
 
 <section class="container py-4">
   <input type="text" id="searchInput" class="form-control mb-3" placeholder="🔍 Rechercher un produit...">
@@ -240,47 +339,58 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body p-2 p-sm-4" id="cartModalBody">
-        <div class="table-responsive d-none d-sm-block">
-          <table class="table align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Prix</th>
-                <th>Total</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="cartModalContent"></tbody>
-          </table>
-        </div>
-        <div class="d-sm-none" id="cartMobileContent"></div>
-        <hr>
-        <div class="text-end fs-5 fw-bold">
-          <span id="cartTotal">Total : 0 DH</span>
-        </div>
-        <div class="delivery-note text-end">
-          <small>* Les frais de livraison seront calculés en fonction de la distance et ne sont pas inclus dans le total.</small>
-        </div>
-        <!-- Formulaire de commande -->
-        <form id="orderForm" class="mt-4">
-          <div class="row g-2">
-            <div class="col-md-6">
-              <input type="text" class="form-control" id="fullName" placeholder="Nom complet" required>
-            </div>
-            <div class="col-md-6">
-              <input type="tel" class="form-control" id="phone" placeholder="Téléphone" required>
-            </div>
-            <div class="col-12">
-              <input type="text" class="form-control" id="address" placeholder="Adresse" required>
-            </div>
-            <div class="col-12">
-              <textarea class="form-control" id="comment" placeholder="Message ou commentaire..."></textarea>
-            </div>
+        <!-- Contenu normal du panier -->
+        <div id="cartNormalContent">
+          <div class="table-responsive d-none d-sm-block">
+            <table class="table align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Produit</th>
+                  <th>Quantité</th>
+                  <th>Prix</th>
+                  <th>Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="cartModalContent"></tbody>
+            </table>
           </div>
-        </form>
+          <div class="d-sm-none" id="cartMobileContent"></div>
+          <hr>
+          <div class="text-end fs-5 fw-bold">
+            <span id="cartTotal">Total : 0 DH</span>
+          </div>
+          <div class="delivery-note text-end">
+            <small>* Les frais de livraison seront calculés en fonction de la distance et ne sont pas inclus dans le total.</small>
+          </div>
+          <!-- Formulaire de commande -->
+          <form id="orderForm" class="mt-4">
+            <div class="row g-2">
+              <div class="col-md-6">
+                <input type="text" class="form-control" id="fullName" placeholder="Nom complet" required>
+              </div>
+              <div class="col-md-6">
+                <input type="tel" class="form-control" id="phone" placeholder="Téléphone" required>
+              </div>
+              <div class="col-12">
+                <input type="text" class="form-control" id="address" placeholder="Adresse" required>
+              </div>
+              <div class="col-12">
+                <textarea class="form-control" id="comment" placeholder="Message ou commentaire..."></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+        <!-- Message de remerciement (caché par défaut) -->
+        <div id="thankYouMessage" class="thank-you-message" style="display: none;">
+          <i class="fas fa-check-circle"></i>
+          <h4>Merci pour votre commande !</h4>
+          <p>Votre commande a été envoyée avec succès.</p>
+          <button class="btn btn-success" onclick="closeThankYouMessage()">OK</button>
+        </div>
       </div>
-      <div class="modal-footer justify-content-between">
+      <div class="modal-footer justify-content-between" id="cartModalFooter">
         <button type="button" class="btn btn-outline-danger" onclick="confirmClearCart()">
           <i class="fas fa-trash-alt"></i> Vider le panier
         </button>
@@ -292,9 +402,54 @@
   </div>
 </div>
 
+<!-- Modal Contact Direct -->
+<div class="modal fade contact-modal" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="contactModalLabel">
+          <i class="fas fa-headset"></i> Contact Direct
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <div class="mb-4">
+          <i class="fas fa-phone-alt fa-3x text-success mb-3"></i>
+          <h4>Contactez-nous directement</h4>
+          <p class="text-muted">Choisissez votre méthode de contact préférée</p>
+          <div class="fs-5 fw-bold text-success">+212 608-975435</div>
+        </div>
+        
+        <div class="contact-buttons">
+          <button class="btn btn-whatsapp" onclick="contactWhatsApp()">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </button>
+          <button class="btn btn-sms" onclick="contactSMS()">
+            <i class="fas fa-comment"></i> SMS
+          </button>
+          <button class="btn btn-call" onclick="contactCall()">
+            <i class="fas fa-phone"></i> Appel
+          </button>
+        </div>
+        
+        <div class="mt-4">
+          <small class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            Disponible du Lundi au Dimanche, 8h - 20h
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="bg-success text-white text-center p-3">
-  &copy; 2025 Fruits & Légumes <br>  
-Créé par M.Seddik Elidrissi
+  <div class="container d-flex justify-content-between align-items-center">
+    <span>&copy; 2025 Fruits & Légumes </span>
+    <span class="footer-contact" data-bs-toggle="modal" data-bs-target="#contactModal" title="Contact Direct">
+      <i class="fas fa-headset fa-lg"></i> Contact
+    </span>
+  </div>
 </footer>
 
 <script>
@@ -304,43 +459,89 @@ Créé par M.Seddik Elidrissi
 
 const products = [
   // Fruits
-  { name: 'Pommes', price: 15, img: 'fleg/pommes.jpg', category: 'fruit', type: 'weight' },
-  { name: 'Bananes', price: 14, img: 'fleg/bananes.jpg', category: 'fruit', type: 'weight' },
-  { name: 'Oranges', price: 13, img: 'fleg/oranges.jpg', category: 'fruit', type: 'weight' },
-  { name: 'Fraises', price: 20, img: 'fleg/fraises.jpg', category: 'fruit', type: 'weight' },
-  { name: 'Raisins', price: 18, img: 'fleg/raisins.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Pommes', price: 15, img: 'https://via.placeholder.com/200x200/FF6B6B/FFFFFF?text=Pommes', category: 'fruit', type: 'weight' },
+  { name: 'Bananes', price: 14, img: 'https://via.placeholder.com/200x200/FFD93D/FFFFFF?text=Bananes', category: 'fruit', type: 'weight' },
+  { name: 'Oranges', price: 13, img: 'https://via.placeholder.com/200x200/6BCF7F/FFFFFF?text=Oranges', category: 'fruit', type: 'weight' },
+  { name: 'Fraises', price: 20, img: 'https://via.placeholder.com/200x200/FF6B9D/FFFFFF?text=Fraises', category: 'fruit', type: 'weight' },
+  { name: 'Raisins', price: 18, img: 'https://via.placeholder.com/200x200/9B59B6/FFFFFF?text=Raisins', category: 'fruit', type: 'weight' },
   
   // Légumes
-  { name: 'Tomates', price: 12, img: 'fleg/tomates.jpg', category: 'legume', type: 'weight' },
-  { name: 'Carottes', price: 10, img: 'fleg/carottes.jpg', category: 'legume', type: 'weight' },
-  { name: 'Concombres', price: 11, img: 'fleg/concombres.jpg', category: 'legume', type: 'weight' },
-  { name: 'Brocoli', price: 16, img: 'fleg/brocoli.jpg', category: 'legume', type: 'weight' },
-  { name: 'Courgettes', price: 9, img: 'fleg/courgettes.jpg', category: 'legume', type: 'weight' },
+  { name: 'Tomates', price: 12, img: 'https://via.placeholder.com/200x200/E74C3C/FFFFFF?text=Tomates', category: 'legume', type: 'weight' },
+  { name: 'Carottes', price: 10, img: 'https://via.placeholder.com/200x200/E67E22/FFFFFF?text=Carottes', category: 'legume', type: 'weight' },
+  { name: 'Concombres', price: 11, img: 'https://via.placeholder.com/200x200/27AE60/FFFFFF?text=Concombres', category: 'legume', type: 'weight' },
+  { name: 'Brocoli', price: 16, img: 'https://via.placeholder.com/200x200/2ECC71/FFFFFF?text=Brocoli', category: 'legume', type: 'weight' },
+  { name: 'Courgettes', price: 9, img: 'https://via.placeholder.com/200x200/F1C40F/FFFFFF?text=Courgettes', category: 'legume', type: 'weight' },
   
   // Féculents (Nouvelle catégorie)
-  { name: 'Pommes de terre', price: 8, img: 'fleg/pommes_de_terre.jpg', category: 'feculent', type: 'weight' },
-  { name: 'Riz', price: 12, img: 'fleg/riz.jpg', category: 'feculent', type: 'weight' },
-  { name: 'Pâtes', price: 10, img: 'fleg/pates.jpg', category: 'feculent', type: 'weight' },
-  { name: 'Lentilles', price: 15, img: 'fleg/lentilles.jpg', category: 'feculent', type: 'weight' },
-  { name: 'Pois chiches', price: 14, img: 'fleg/pois_chiches.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Pommes de terre', price: 8, img: 'https://via.placeholder.com/200x200/95A5A6/FFFFFF?text=Pommes%20Terre', category: 'feculent', type: 'weight' },
+  { name: 'Riz', price: 12, img: 'https://via.placeholder.com/200x200/ECF0F1/000000?text=Riz', category: 'feculent', type: 'weight' },
+  { name: 'Pâtes', price: 10, img: 'https://via.placeholder.com/200x200/BDC3C7/000000?text=Pâtes', category: 'feculent', type: 'weight' },
+  { name: 'Lentilles', price: 15, img: 'https://via.placeholder.com/200x200/D35400/FFFFFF?text=Lentilles', category: 'feculent', type: 'weight' },
+  { name: 'Pois chiches', price: 14, img: 'https://via.placeholder.com/200x200/E67E22/FFFFFF?text=Pois%20Chiches', category: 'feculent', type: 'weight' },
   
   // Épices
-  { name: 'Poivre Noir', price: 25, img: 'fleg/poivre.jpg', category: 'epice', type: 'weight' },
-  { name: 'Curcuma', price: 18, img: 'fleg/curcuma.jpg', category: 'epice', type: 'weight' },
-  { name: 'Cumin', price: 22, img: 'fleg/cumin.jpg', category: 'epice', type: 'weight' },
-  { name: 'Paprika', price: 20, img: 'fleg/paprika.jpg', category: 'epice', type: 'weight' },
-  { name: 'Cannelle', price: 30, img: 'fleg/cannelle.jpg', category: 'epice', type: 'weight' },
+  { name: 'Poivre Noir', price: 25, img: 'https://via.placeholder.com/200x200/2C3E50/FFFFFF?text=Poivre', category: 'epice', type: 'weight' },
+  { name: 'Curcuma', price: 18, img: 'https://via.placeholder.com/200x200/F39C12/FFFFFF?text=Curcuma', category: 'epice', type: 'weight' },
+  { name: 'Cumin', price: 22, img: 'https://via.placeholder.com/200x200/16A085/FFFFFF?text=Cumin', category: 'epice', type: 'weight' },
+  { name: 'Paprika', price: 20, img: 'https://via.placeholder.com/200x200/C0392B/FFFFFF?text=Paprika', category: 'epice', type: 'weight' },
+  { name: 'Cannelle', price: 30, img: 'https://via.placeholder.com/200x200/8E44AD/FFFFFF?text=Cannelle', category: 'epice', type: 'weight' },
   
   // Produits à la pièce
-  { name: 'Ananas', price: 12, img: 'fleg/ananas.jpg', category: 'piece', type: 'piece' },
-  { name: 'Pastèque', price: 25, img: 'fleg/pasteque.jpg', category: 'piece', type: 'piece' },
-  { name: 'Chou-fleur', price: 8, img: 'fleg/choufleur.jpg', category: 'piece', type: 'piece' },
-  { name: 'Aubergine', price: 6, img: 'fleg/aubergine.jpg', category: 'piece', type: 'piece' },
-  { name: 'Poivron', price: 5, img: 'fleg/poivron.jpg', category: 'piece', type: 'piece' }
+  { name: 'Ananas', price: 12, img: 'https://via.placeholder.com/200x200/F1C40F/FFFFFF?text=Ananas', category: 'piece', type: 'piece' },
+  { name: 'Pastèque', price: 25, img: 'https://via.placeholder.com/200x200/E74C3C/FFFFFF?text=Pastèque', category: 'piece', type: 'piece' },
+  { name: 'Chou-fleur', price: 8, img: 'https://via.placeholder.com/200x200/ECF0F1/000000?text=Chou-Fleur', category: 'piece', type: 'piece' },
+  { name: 'Aubergine', price: 6, img: 'https://via.placeholder.com/200x200/9B59B6/FFFFFF?text=Aubergine', category: 'piece', type: 'piece' },
+  { name: 'Poivron', price: 5, img: 'https://via.placeholder.com/200x200/27AE60/FFFFFF?text=Poivron', category: 'piece', type: 'piece' }
 ];
 
 let cart = [];
 let currentLayout = 1; // 1 ou 2 produits par ligne sur mobile
+const phoneNumber = "212608975435";
+
+// Fonction pour le bouton "Revenir en haut"
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+// Afficher/masquer le bouton selon la position de défilement
+window.addEventListener('scroll', function() {
+  const backToTopButton = document.getElementById('backToTop');
+  if (window.pageYOffset > 300) {
+    backToTopButton.classList.add('show');
+  } else {
+    backToTopButton.classList.remove('show');
+  }
+});
+
+// Fonctions pour le contact direct
+function contactWhatsApp() {
+  const message = "Bonjour, je souhaite vous contacter à propos de vos produits Fruits & Légumes.";
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+  // Fermer la modale après ouverture de WhatsApp
+  const modal = bootstrap.Modal.getInstance(document.getElementById('contactModal'));
+  modal.hide();
+}
+
+function contactSMS() {
+  const message = "Bonjour, je souhaite vous contacter à propos de vos produits Fruits & Légumes.";
+  const url = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+  window.location.href = url;
+  // Fermer la modale après ouverture de l'application SMS
+  const modal = bootstrap.Modal.getInstance(document.getElementById('contactModal'));
+  modal.hide();
+}
+
+function contactCall() {
+  const url = `tel:${phoneNumber}`;
+  window.location.href = url;
+  // Fermer la modale après ouverture de l'application d'appel
+  const modal = bootstrap.Modal.getInstance(document.getElementById('contactModal'));
+  modal.hide();
+}
 
 function changeLayout(columns) {
   currentLayout = columns;
@@ -507,15 +708,25 @@ function updateCart() {
   let total = 0;
 
   if (cart.length === 0) {
-    document.getElementById("cartModalBody").innerHTML = `
-      <div class="thank-you-message">
-        <i class="fas fa-shopping-cart"></i>
+    document.getElementById("cartNormalContent").style.display = "block";
+    document.getElementById("thankYouMessage").style.display = "none";
+    document.getElementById("cartModalFooter").style.display = "flex";
+    
+    const emptyCartHTML = `
+      <div class="text-center py-4">
+        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
         <h4>Votre panier est vide</h4>
-        <p>Ajoutez des produits pour commencer vos achats.</p>
-        <button class="btn btn-success" data-bs-dismiss="modal">Fermer</button>
+        <p class="text-muted">Ajoutez des produits pour commencer vos achats.</p>
       </div>`;
+    
+    tableContainer.innerHTML = emptyCartHTML;
+    mobileContainer.innerHTML = emptyCartHTML;
     return;
   }
+
+  document.getElementById("cartNormalContent").style.display = "block";
+  document.getElementById("thankYouMessage").style.display = "none";
+  document.getElementById("cartModalFooter").style.display = "flex";
 
   cart.forEach(item => {
     const itemTotal = calculateItemPrice(item, item.quantity);
@@ -755,36 +966,34 @@ function submitOrder() {
   const whatsappURL = `https://wa.me/212608975435?text=${encodeURIComponent(message)}`;
   window.open(whatsappURL, '_blank');
 
-  // Afficher le message de remerciement
-  document.getElementById("cartModalBody").innerHTML = `
-    <div class="thank-you-message">
-      <i class="fas fa-check-circle"></i>
-      <h4>Merci pour votre commande !</h4>
-      <p>Votre commande a été envoyée avec succès.</p>
-      <button class="btn btn-success" onclick="closeCartModal()">OK</button>
-    </div>`;
-
-  // Réinitialiser le formulaire et le panier
-  document.getElementById("orderForm").reset();
-  
-  Swal.fire({
-    icon: 'success',
-    title: 'Commande envoyée !',
-    text: 'Votre commande a été transmise avec succès.',
-    confirmButtonColor: '#28a745',
-    timer: 2000,
-    showConfirmButton: false
-  });
+  // Afficher le message de remerciement et vider le panier
+  showThankYouMessage();
 }
 
-function closeCartModal() {
+function showThankYouMessage() {
+  // Vider le panier
+  cart = [];
+  updateCartBadge();
+  
+  // Afficher le message de remerciement
+  document.getElementById("cartNormalContent").style.display = "none";
+  document.getElementById("thankYouMessage").style.display = "block";
+  document.getElementById("cartModalFooter").style.display = "none";
+  
+  // Réinitialiser le formulaire
+  document.getElementById("orderForm").reset();
+}
+
+function closeThankYouMessage() {
+  // Fermer le modal
   const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
   modal.hide();
-  // Réinitialiser l'affichage du panier pour la prochaine ouverture
+  
+  // Réinitialiser l'affichage pour la prochaine commande
   setTimeout(() => {
-    cart = [];
-    updateCart();
-    updateCartBadge();
+    document.getElementById("cartNormalContent").style.display = "block";
+    document.getElementById("thankYouMessage").style.display = "none";
+    document.getElementById("cartModalFooter").style.display = "flex";
   }, 500);
 }
 
