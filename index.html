@@ -459,39 +459,47 @@
 
 const products = [
   // Fruits
-  { name: 'Pommes', price: 15, img: 'https://via.placeholder.com/200x200/FF6B6B/FFFFFF?text=Pommes', category: 'fruit', type: 'weight' },
-  { name: 'Bananes', price: 14, img: 'https://via.placeholder.com/200x200/FFD93D/FFFFFF?text=Bananes', category: 'fruit', type: 'weight' },
-  { name: 'Oranges', price: 13, img: 'https://via.placeholder.com/200x200/6BCF7F/FFFFFF?text=Oranges', category: 'fruit', type: 'weight' },
-  { name: 'Fraises', price: 20, img: 'https://via.placeholder.com/200x200/FF6B9D/FFFFFF?text=Fraises', category: 'fruit', type: 'weight' },
-  { name: 'Raisins', price: 18, img: 'https://via.placeholder.com/200x200/9B59B6/FFFFFF?text=Raisins', category: 'fruit', type: 'weight' },
+  { name: 'Pommes', price: 19.90, img: 'images/pomme.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Bananes', price: 19.95, img: 'images/banane.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Oranges', price: 11.90, img: 'images/orange.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Avocat', price: 29.95, img: 'images/avocat2.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Avocat Hass', price: 63.90, img: 'images/avocat.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Raisins', price: 9.90, img: 'images/raisin.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Kiwi', price: 65.90, img: 'images/kiwi.jpg', category: 'fruit', type: 'weight' },
   
   // Légumes
-  { name: 'Tomates', price: 12, img: 'https://via.placeholder.com/200x200/E74C3C/FFFFFF?text=Tomates', category: 'legume', type: 'weight' },
-  { name: 'Carottes', price: 10, img: 'https://via.placeholder.com/200x200/E67E22/FFFFFF?text=Carottes', category: 'legume', type: 'weight' },
-  { name: 'Concombres', price: 11, img: 'https://via.placeholder.com/200x200/27AE60/FFFFFF?text=Concombres', category: 'legume', type: 'weight' },
-  { name: 'Brocoli', price: 16, img: 'https://via.placeholder.com/200x200/2ECC71/FFFFFF?text=Brocoli', category: 'legume', type: 'weight' },
-  { name: 'Courgettes', price: 9, img: 'https://via.placeholder.com/200x200/F1C40F/FFFFFF?text=Courgettes', category: 'legume', type: 'weight' },
+  { name: 'Tomates', price: 6.96, img: 'images/tomate.jpg', category: 'legume', type: 'weight' },
+  { name: 'Carottes', price: 9.95, img: 'images/carotte.jpg', category: 'legume', type: 'weight' },
+  { name: 'Concombres', price: 9.95, img: 'images/concombre.jpg', category: 'legume', type: 'weight' },
+  { name: 'Pomme de terre blanche', price: 7.50, img: 'images/pdb.jpg', category: 'legume', type: 'weight' },
+  { name: 'Courgette blanche', price: 9.95, img: 'images/corb.jpg', category: 'legume', type: 'weight' },
+  { name: 'Aubergine ronde', price: 8.50, img: 'images/aubergine.jpg', category: 'legume', type: 'weight' },
+  { name: 'Coings', price: 18.95, img: 'images/coing.jpg', category: 'legume', type: 'weight' },
+  { name: 'Gombo', price: 31.90, img: 'images/gombo.jpg', category: 'legume', type: 'weight' },
+  { name: 'Poivron vert', price: 10.50, img: 'images/pvert.jpg', category: 'legume', type: 'weight' },
+  { name: 'Haricots vert', price: 32.95, img: 'images/hvert.jpg', category: 'legume', type: 'weight' },
   
   // Féculents (Nouvelle catégorie)
-  { name: 'Pommes de terre', price: 8, img: 'https://via.placeholder.com/200x200/95A5A6/FFFFFF?text=Pommes%20Terre', category: 'feculent', type: 'weight' },
-  { name: 'Riz', price: 12, img: 'https://via.placeholder.com/200x200/ECF0F1/000000?text=Riz', category: 'feculent', type: 'weight' },
-  { name: 'Pâtes', price: 10, img: 'https://via.placeholder.com/200x200/BDC3C7/000000?text=Pâtes', category: 'feculent', type: 'weight' },
-  { name: 'Lentilles', price: 15, img: 'https://via.placeholder.com/200x200/D35400/FFFFFF?text=Lentilles', category: 'feculent', type: 'weight' },
-  { name: 'Pois chiches', price: 14, img: 'https://via.placeholder.com/200x200/E67E22/FFFFFF?text=Pois%20Chiches', category: 'feculent', type: 'weight' },
+  { name: 'Pommes de terre', price: 8, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Riz', price: 12, img: 'images/feculents.jpg', type: 'weight' },
+  { name: 'Pâtes', price: 10, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Lentilles', price: 15, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Pois chiches', price: 14, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
   
   // Épices
-  { name: 'Poivre Noir', price: 25, img: 'https://via.placeholder.com/200x200/2C3E50/FFFFFF?text=Poivre', category: 'epice', type: 'weight' },
-  { name: 'Curcuma', price: 18, img: 'https://via.placeholder.com/200x200/F39C12/FFFFFF?text=Curcuma', category: 'epice', type: 'weight' },
-  { name: 'Cumin', price: 22, img: 'https://via.placeholder.com/200x200/16A085/FFFFFF?text=Cumin', category: 'epice', type: 'weight' },
-  { name: 'Paprika', price: 20, img: 'https://via.placeholder.com/200x200/C0392B/FFFFFF?text=Paprika', category: 'epice', type: 'weight' },
-  { name: 'Cannelle', price: 30, img: 'https://via.placeholder.com/200x200/8E44AD/FFFFFF?text=Cannelle', category: 'epice', type: 'weight' },
+  { name: 'Poivre Noir', price: 25, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
+  { name: 'Curcuma', price: 18, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cumin', price: 22, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
+  { name: 'Paprika', price: 20, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cannelle', price: 30, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
   
   // Produits à la pièce
-  { name: 'Ananas', price: 12, img: 'https://via.placeholder.com/200x200/F1C40F/FFFFFF?text=Ananas', category: 'piece', type: 'piece' },
-  { name: 'Pastèque', price: 25, img: 'https://via.placeholder.com/200x200/E74C3C/FFFFFF?text=Pastèque', category: 'piece', type: 'piece' },
-  { name: 'Chou-fleur', price: 8, img: 'https://via.placeholder.com/200x200/ECF0F1/000000?text=Chou-Fleur', category: 'piece', type: 'piece' },
-  { name: 'Aubergine', price: 6, img: 'https://via.placeholder.com/200x200/9B59B6/FFFFFF?text=Aubergine', category: 'piece', type: 'piece' },
-  { name: 'Poivron', price: 5, img: 'https://via.placeholder.com/200x200/27AE60/FFFFFF?text=Poivron', category: 'piece', type: 'piece' }
+  { name: 'Ananas la pièce', price: 21.90, img: 'images/ananas.jpg', category: 'piece', type: 'piece' },
+  { name: 'Laitue verte la pièce', price: 6.90, img: 'images/laitue.jpg', category: 'piece', type: 'piece' },
+  { name: 'Persil en sachet', price: 4.50, img: 'images/persil.jpg', category: 'piece', type: 'piece' },
+  { name: 'Coriandre en sachet', price: 4.50, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' },
+  { name: 'Aubergine', price: 6, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' },
+  { name: 'Poivron', price: 5, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' }
 ];
 
 let cart = [];
