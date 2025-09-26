@@ -1,134 +1,812 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bienvenue - Mon E-commerce</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to right, #fefcea, #f1da36);
-    margin:0; 
-    padding:0;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden; /* empêche le scroll */
-  }
-  header, footer {
-    background: #28a745;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-weight:bold;
-    text-shadow: 1px 1px 2px #000;
-    flex-shrink:0; /* empêche d’écraser le header/footer */
-    position: fixed;
-    left: 0;
-    right: 0;
-    z-index: 10;
-  }
-  header {
-    top:0;
-  }
-  footer {
-    bottom:0;
-  }
-  main {
-    flex:1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 40px;
-    padding: 20px;
-    margin-top: 80px;   /* espace pour le header */
-    margin-bottom: 80px;/* espace pour le footer */
-    overflow:auto;      /* si jamais le contenu dépasse */
-  }
-  .category-card {
-    width: 260px;
-    height: 260px;
-    border-radius: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .category-card img {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 15px;
-    transition: transform 0.3s;
-  }
-  .category-card:hover {
-    transform: scale(1.08);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.4);
-  }
-  .fruits { background: radial-gradient(circle at top left, #ff7f50, #ff4500); }
-  .boucherie { background: radial-gradient(circle at top right, #8B0000, #B22222); }
-  .category-card::after {
-    content: "";
-    position: absolute;
-    width: 150%;
-    height: 150%;
-    background: rgba(255,255,255,0.1);
-    top: -50%;
-    left: -50%;
-    transform: rotate(45deg);
-    pointer-events:none;
-  }
-  @media(max-width:768px){
-    main { flex-direction: column; gap: 20px; }
-    .category-card { width: 220px; height: 220px; font-size: 18px; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Boutique Fruits & Légumes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 120px;
+      padding-bottom: 70px;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 1000;
+      background-color: #198754 !important;
+    }
+    .product-card {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      border-color: #28a745;
+    }
+    .product-card img {
+      height: 180px;
+      width: 100%;
+      object-fit: contain;
+      background-color: #f8f9fa;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    .product-name { 
+      font-weight: bold; 
+      margin: 10px 0;
+      color: #2c3e50;
+      font-size: 1.1rem;
+    }
+    .product-price {
+      color: #28a745;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .cart-button {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .cart-button:hover { 
+      background: #218838;
+      transform: scale(1.05);
+    }
+    .filter-select { 
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    .btn-plus {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+    .btn-minus {
+      background-color: #dc3545;
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+    .cart-card {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background-color: #f8f9fa;
+    }
+    .cart-card .cart-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .cart-card .cart-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cart-item-image {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-right: 10px;
+      border: 1px solid #dee2e6;
+    }
+    .delivery-note {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-top: 10px;
+    }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .quantity-controls button {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .quantity-display {
+      font-weight: bold;
+      min-width: 30px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .product-card .quantity-section {
+      margin: 15px 0;
+    }
+    .thank-you-message {
+      text-align: center;
+      padding: 20px;
+    }
+    .thank-you-message i {
+      font-size: 3rem;
+      color: #28a745;
+      margin-bottom: 15px;
+    }
+    .layout-switcher {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border: 2px solid #e9ecef;
+    }
+    .layout-btn {
+      background: none;
+      border: none;
+      padding: 5px 10px;
+      margin: 0 5px;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    .layout-btn.active {
+      background-color: #28a745;
+      color: white;
+    }
+    .layout-btn:hover {
+      background-color: #e9ecef;
+    }
+    .layout-btn.active:hover {
+      background-color: #218838;
+    }
+    .product-type {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  Bienvenue dans votre espace <br>
-- Mon Ordre de Préparation -
+<header class="bg-success text-white p-3 shadow">
+  <div class="container d-flex justify-content-between align-items-center">
+    <h1 class="h4 m-0"><i class="fas fa-leaf"></i> Fruits & Légumes</h1>
+    <nav>
+      <a href="#cart" class="text-white" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <i class="fas fa-shopping-cart"></i> Panier 
+        <span id="cartBadge" class="badge bg-danger">0</span>
+      </a>
+    </nav>
+  </div>
 </header>
 
-<main>
-  <div class="category-card fruits" onclick="goToCategory('fleg.html')">
-    <img src="images/fleg.jpg" alt="Fruits & Légumes">
-    Fruits & Légumes
-  </div>
-  <div class="category-card boucherie" onclick="goToCategory('bv.html')">
-    <img src="images/bovo.jpg" alt="Boucherie & Volaille">
-    Boucherie & Volaille
-  </div>
-</main>
+<!-- Layout Switcher -->
+<div class="layout-switcher d-md-none">
+  <button class="layout-btn active" onclick="changeLayout(1)">
+    <i class="fas fa-grip-vertical"></i>
+  </button>
+  <button class="layout-btn" onclick="changeLayout(2)">
+    <i class="fas fa-th-large"></i>
+  </button>
+</div>
 
-<footer>
-  MMS59.vercel.app <br> 
-Créé Par : M.Seddik Elidrissi
+<section class="container py-4">
+  <input type="text" id="searchInput" class="form-control mb-3" placeholder="🔍 Rechercher un produit...">
+  
+  <div class="text-center">
+    <select id="categoryFilter" class="form-select filter-select" onchange="filterCategory(this.value)">
+      <option value="all">Toutes les catégories</option>
+      <option value="fruit">🍎 Fruits</option>
+      <option value="legume">🥕 Légumes</option>
+      <option value="feculent">🥔 Féculents</option>
+      <option value="epice">🌶️ Épices</option>
+      <option value="piece">📦 Produits à la pièce</option>
+    </select>
+  </div>
+</section>
+
+<section id="products" class="container py-4">
+  <div class="row" id="product-grid"></div>
+</section>
+
+<!-- Modal Panier -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-sm-down modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-cart"></i> Votre Panier</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body p-2 p-sm-4" id="cartModalBody">
+        <div class="table-responsive d-none d-sm-block">
+          <table class="table align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cartModalContent"></tbody>
+          </table>
+        </div>
+        <div class="d-sm-none" id="cartMobileContent"></div>
+        <hr>
+        <div class="text-end fs-5 fw-bold">
+          <span id="cartTotal">Total : 0 DH</span>
+        </div>
+        <div class="delivery-note text-end">
+          <small>* Les frais de livraison seront calculés en fonction de la distance et ne sont pas inclus dans le total.</small>
+        </div>
+        <!-- Formulaire de commande -->
+        <form id="orderForm" class="mt-4">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="fullName" placeholder="Nom complet" required>
+            </div>
+            <div class="col-md-6">
+              <input type="tel" class="form-control" id="phone" placeholder="Téléphone" required>
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control" id="address" placeholder="Adresse" required>
+            </div>
+            <div class="col-12">
+              <textarea class="form-control" id="comment" placeholder="Message ou commentaire..."></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-danger" onclick="confirmClearCart()">
+          <i class="fas fa-trash-alt"></i> Vider le panier
+        </button>
+        <button type="button" class="btn btn-success" onclick="confirmOrder()">
+          <i class="fas fa-check-circle"></i> Valider la commande
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-success text-white text-center p-3">
+  &copy; 2025 Fruits & Légumes <br>  
+Créé par M.Seddik Elidrissi
 </footer>
 
 <script>
-function goToCategory(url){
-  Swal.fire({
-    title: "Redirection",
-    text: "Vous allez être redirigé vers votre rayon choisi.. Merci d'avoir utiliser MMS59.vercel.app!",
-    icon: "info",
-    confirmButtonText: "OK"
-  }).then(()=>{
-    window.location.href = url;
+// ==================== CONFIGURATION FACILE DES PRODUITS ====================
+// Ajoutez facilement de nouveaux produits ici en suivant le format :
+// { name: 'Nom', price: prix, img: 'image.jpg', category: 'categorie', type: 'type' }
+
+const products = [
+  // Fruits
+  { name: 'Pommes', price: 15, img: 'fleg/pommes.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Bananes', price: 14, img: 'fleg/bananes.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Oranges', price: 13, img: 'fleg/oranges.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Fraises', price: 20, img: 'fleg/fraises.jpg', category: 'fruit', type: 'weight' },
+  { name: 'Raisins', price: 18, img: 'fleg/raisins.jpg', category: 'fruit', type: 'weight' },
+  
+  // Légumes
+  { name: 'Tomates', price: 12, img: 'fleg/tomates.jpg', category: 'legume', type: 'weight' },
+  { name: 'Carottes', price: 10, img: 'fleg/carottes.jpg', category: 'legume', type: 'weight' },
+  { name: 'Concombres', price: 11, img: 'fleg/concombres.jpg', category: 'legume', type: 'weight' },
+  { name: 'Brocoli', price: 16, img: 'fleg/brocoli.jpg', category: 'legume', type: 'weight' },
+  { name: 'Courgettes', price: 9, img: 'fleg/courgettes.jpg', category: 'legume', type: 'weight' },
+  
+  // Féculents (Nouvelle catégorie)
+  { name: 'Pommes de terre', price: 8, img: 'fleg/pommes_de_terre.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Riz', price: 12, img: 'fleg/riz.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Pâtes', price: 10, img: 'fleg/pates.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Lentilles', price: 15, img: 'fleg/lentilles.jpg', category: 'feculent', type: 'weight' },
+  { name: 'Pois chiches', price: 14, img: 'fleg/pois_chiches.jpg', category: 'feculent', type: 'weight' },
+  
+  // Épices
+  { name: 'Poivre Noir', price: 25, img: 'fleg/poivre.jpg', category: 'epice', type: 'weight' },
+  { name: 'Curcuma', price: 18, img: 'fleg/curcuma.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cumin', price: 22, img: 'fleg/cumin.jpg', category: 'epice', type: 'weight' },
+  { name: 'Paprika', price: 20, img: 'fleg/paprika.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cannelle', price: 30, img: 'fleg/cannelle.jpg', category: 'epice', type: 'weight' },
+  
+  // Produits à la pièce
+  { name: 'Ananas', price: 12, img: 'fleg/ananas.jpg', category: 'piece', type: 'piece' },
+  { name: 'Pastèque', price: 25, img: 'fleg/pasteque.jpg', category: 'piece', type: 'piece' },
+  { name: 'Chou-fleur', price: 8, img: 'fleg/choufleur.jpg', category: 'piece', type: 'piece' },
+  { name: 'Aubergine', price: 6, img: 'fleg/aubergine.jpg', category: 'piece', type: 'piece' },
+  { name: 'Poivron', price: 5, img: 'fleg/poivron.jpg', category: 'piece', type: 'piece' }
+];
+
+let cart = [];
+let currentLayout = 1; // 1 ou 2 produits par ligne sur mobile
+
+function changeLayout(columns) {
+  currentLayout = columns;
+  
+  // Mettre à jour les boutons actifs
+  document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  // Mettre à jour l'affichage des produits
+  displayProducts(products);
+}
+
+function getProductTypeText(product) {
+  if (product.type === 'piece') {
+    return 'À la pièce';
+  } else {
+    return 'Au poids';
+  }
+}
+
+function getPriceDisplay(product) {
+  if (product.type === 'piece') {
+    return `${product.price} DH / pièce`;
+  } else {
+    return `${(product.price / 4).toFixed(2)} DH / 250g`;
+  }
+}
+
+function calculateItemPrice(product, quantity) {
+  if (product.type === 'piece') {
+    return quantity * product.price;
+  } else {
+    return quantity * product.price / 4;
+  }
+}
+
+function displayProducts(list) {
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = "";
+  
+  // Déterminer la classe de colonne en fonction du layout
+  const colClass = currentLayout === 1 ? 'col-12' : 'col-6';
+  
+  list.forEach(p => {
+    const col = document.createElement("div");
+    col.className = `${colClass} col-md-3 col-sm-6`;
+    col.innerHTML = `
+      <div class="product-card" data-name="${p.name.toLowerCase()}" data-category="${p.category}">
+        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200x200/28a745/ffffff?text=${p.name}'">
+        <div class="product-name">${p.name}</div>
+        <div class="product-type">${getProductTypeText(p)}</div>
+        <div class="product-price">${getPriceDisplay(p)}</div>
+        <div class="quantity-section">
+          <div class="quantity-controls justify-content-center">
+            <button class="btn btn-minus" onclick="updateProductQuantity('${p.name}', -1)">-</button>
+            <span class="quantity-display" id="qty-${p.name}">0</span>
+            <button class="btn btn-plus" onclick="updateProductQuantity('${p.name}', 1)">+</button>
+          </div>
+          <div class="price-display" id="price-${p.name}">0.00 DH</div>
+        </div>
+        <button class="cart-button" onclick="addToCart('${p.name}', ${p.price})">
+          <i class="fas fa-cart-plus"></i> Ajouter au panier
+        </button>
+      </div>`;
+    grid.appendChild(col);
   });
 }
+
+function updateProductQuantity(name, change) {
+  const quantityDisplay = document.getElementById(`qty-${name}`);
+  const priceDisplay = document.getElementById(`price-${name}`);
+  const product = products.find(p => p.name === name);
+  
+  let currentQty = parseInt(quantityDisplay.textContent) || 0;
+  currentQty += change;
+  
+  if (currentQty < 0) currentQty = 0;
+  
+  quantityDisplay.textContent = currentQty;
+  priceDisplay.textContent = calculateItemPrice(product, currentQty).toFixed(2) + " DH";
+}
+
+function addToCart(name, price) {
+  const quantityDisplay = document.getElementById(`qty-${name}`);
+  const qty = parseInt(quantityDisplay.textContent) || 1;
+  
+  if (qty === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Quantité zéro',
+      text: 'Veuillez sélectionner une quantité avant d\'ajouter au panier.',
+      confirmButtonColor: '#28a745'
+    });
+    return;
+  }
+  
+  const found = cart.find(i => i.name === name);
+  const product = products.find(p => p.name === name);
+  
+  if (found) {
+    Swal.fire({
+      title: 'Produit déjà dans le panier',
+      text: `"${name}" est déjà dans votre panier. Que souhaitez-vous faire ?`,
+      icon: 'question',
+      showCancelButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Modifier la quantité',
+      denyButtonText: 'Retirer du panier',
+      cancelButtonText: 'Annuler',
+      confirmButtonColor: '#28a745',
+      denyButtonColor: '#dc3545'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        found.quantity = qty;
+        updateCart();
+        updateCartBadge();
+        resetProductQuantity(name);
+        Swal.fire({
+          icon: 'success',
+          title: 'Quantité modifiée',
+          text: `La quantité de "${name}" a été mise à jour.`,
+          confirmButtonColor: '#28a745'
+        });
+      } else if (result.isDenied) {
+        removeFromCart(name);
+        resetProductQuantity(name);
+      }
+    });
+  } else {
+    cart.push({ 
+      name, 
+      price, 
+      quantity: qty, 
+      img: product.img,
+      type: product.type,
+      category: product.category
+    });
+    updateCart();
+    updateCartBadge();
+    resetProductQuantity(name);
+    Swal.fire({
+      icon: 'success',
+      title: 'Ajouté au panier',
+      text: `"${name}" a été ajouté à votre panier.`,
+      confirmButtonColor: '#28a745',
+      timer: 1500,
+      showConfirmButton: false
+    });
+  }
+}
+
+function resetProductQuantity(name) {
+  const quantityDisplay = document.getElementById(`qty-${name}`);
+  const priceDisplay = document.getElementById(`price-${name}`);
+  quantityDisplay.textContent = "0";
+  priceDisplay.textContent = "0.00 DH";
+}
+
+function updateCart() {
+  const tableContainer = document.getElementById("cartModalContent");
+  const mobileContainer = document.getElementById("cartMobileContent");
+  tableContainer.innerHTML = "";
+  mobileContainer.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    document.getElementById("cartModalBody").innerHTML = `
+      <div class="thank-you-message">
+        <i class="fas fa-shopping-cart"></i>
+        <h4>Votre panier est vide</h4>
+        <p>Ajoutez des produits pour commencer vos achats.</p>
+        <button class="btn btn-success" data-bs-dismiss="modal">Fermer</button>
+      </div>`;
+    return;
+  }
+
+  cart.forEach(item => {
+    const itemTotal = calculateItemPrice(item, item.quantity);
+    total += itemTotal;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <img src="${item.img}" alt="${item.name}" class="cart-item-image">
+        ${item.name}
+      </td>
+      <td>
+        <button class="btn btn-sm btn-minus" onclick="updateQuantity('${item.name}', -1)">-</button>
+        <span class="mx-2">${item.quantity}</span>
+        <button class="btn btn-sm btn-plus" onclick="updateQuantity('${item.name}', 1)">+</button>
+      </td>
+      <td>${item.type === 'piece' ? item.price + ' DH' : (item.price / 4).toFixed(2) + ' DH'}</td>
+      <td>${itemTotal.toFixed(2)} DH</td>
+      <td><button class="btn btn-sm btn-danger" onclick="confirmRemoveItem('${item.name}')"><i class="fas fa-trash"></i></button></td>`;
+    tableContainer.appendChild(row);
+
+    const card = document.createElement("div");
+    card.className = "cart-card";
+    card.innerHTML = `
+      <div class="d-flex align-items-center mb-2">
+        <img src="${item.img}" alt="${item.name}" class="cart-item-image">
+        <div>
+          <div class="cart-title">${item.name}</div>
+          <small class="text-muted">${item.type === 'piece' ? 'À la pièce' : 'Au poids'}</small>
+        </div>
+      </div>
+      <div class="cart-actions">
+        <div>
+          <button class="btn btn-sm btn-minus" onclick="updateQuantity('${item.name}', -1)">-</button>
+          <span class="mx-2">${item.quantity}</span>
+          <button class="btn btn-sm btn-plus" onclick="updateQuantity('${item.name}', 1)">+</button>
+        </div>
+        <div>
+          ${item.type === 'piece' ? item.price + ' DH/pièce' : (item.price / 4).toFixed(2) + ' DH/250g'}<br>
+          <strong>${itemTotal.toFixed(2)} DH</strong>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="confirmRemoveItem('${item.name}')"><i class="fas fa-trash"></i></button>
+      </div>`;
+    mobileContainer.appendChild(card);
+  });
+
+  document.getElementById("cartTotal").textContent = `Total : ${total.toFixed(2)} DH`;
+}
+
+// MODIFICATION IMPORTANTE : Compter 1 article par produit (pas par quantité)
+function updateCartBadge() {
+  // Compter le nombre de produits différents dans le panier (pas la quantité totale)
+  const uniqueProductsCount = cart.length;
+  document.getElementById("cartBadge").textContent = uniqueProductsCount;
+}
+
+function updateQuantity(name, change) {
+  const item = cart.find(i => i.name === name);
+  if (item) {
+    item.quantity += change;
+    if (item.quantity <= 0) {
+      confirmRemoveItem(name);
+    } else {
+      updateCart();
+      updateCartBadge();
+    }
+  }
+}
+
+function confirmRemoveItem(name) {
+  Swal.fire({
+    title: 'Retirer le produit',
+    text: `Êtes-vous sûr de vouloir retirer "${name}" de votre panier ?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Oui, retirer',
+    cancelButtonText: 'Annuler'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      removeFromCart(name);
+    }
+  });
+}
+
+function removeFromCart(name) {
+  cart = cart.filter(i => i.name !== name);
+  updateCart();
+  updateCartBadge();
+  Swal.fire({
+    icon: 'success',
+    title: 'Produit retiré',
+    text: `"${name}" a été retiré de votre panier.`,
+    confirmButtonColor: '#28a745',
+    timer: 1500,
+    showConfirmButton: false
+  });
+}
+
+function confirmClearCart() {
+  if (cart.length === 0) {
+    Swal.fire({
+      icon: 'info',
+      title: 'Panier vide',
+      text: 'Votre panier est déjà vide.',
+      confirmButtonColor: '#28a745'
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Vider le panier',
+    text: 'Êtes-vous sûr de vouloir vider complètement votre panier ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Oui, vider le panier',
+    cancelButtonText: 'Annuler'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      clearCart();
+    }
+  });
+}
+
+function clearCart() {
+  cart = [];
+  updateCart();
+  updateCartBadge();
+  Swal.fire({
+    icon: 'success',
+    title: 'Panier vidé',
+    text: 'Votre panier a été vidé avec succès.',
+    confirmButtonColor: '#28a745',
+    timer: 1500,
+    showConfirmButton: false
+  });
+}
+
+function confirmOrder() {
+  const name = document.getElementById("fullName");
+  const phone = document.getElementById("phone");
+  const address = document.getElementById("address");
+
+  let formValid = true;
+
+  if (!name.value.trim()) {
+    name.classList.add('is-invalid');
+    formValid = false;
+  } else {
+    name.classList.remove('is-invalid');
+  }
+
+  if (!phone.value.trim()) {
+    phone.classList.add('is-invalid');
+    formValid = false;
+  } else {
+    phone.classList.remove('is-invalid');
+  }
+
+  if (!address.value.trim()) {
+    address.classList.add('is-invalid');
+    formValid = false;
+  } else {
+    address.classList.remove('is-invalid');
+  }
+
+  if (!formValid) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Champs manquants',
+      text: 'Veuillez remplir tous les champs obligatoires.',
+      confirmButtonColor: '#dc3545'
+    });
+    return;
+  }
+
+  if (cart.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Panier vide',
+      text: 'Votre panier est vide. Ajoutez des produits avant de valider la commande.',
+      confirmButtonColor: '#28a745'
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Confirmer la commande',
+    html: `Votre commande va être envoyée via WhatsApp.<br><br>Confirmez-vous cette action ?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#28a745',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Oui, envoyer sur WhatsApp',
+    cancelButtonText: 'Annuler'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      submitOrder();
+    }
+  });
+}
+
+function submitOrder() {
+  const name = document.getElementById("fullName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const comment = document.getElementById("comment").value.trim();
+
+  let message = `*NOUVELLE COMMANDE - FRUITS & LÉGUMES*\n\n`;
+  message += `*INFORMATIONS CLIENT:*\n`;
+  message += `• Nom complet: ${name}\n`;
+  message += `• Téléphone: ${phone}\n`;
+  message += `• Adresse: ${address}\n`;
+  if (comment) message += `• Message: ${comment}\n`;
+  
+  message += `\n*DÉTAILS DE LA COMMANDE:*\n`;
+  
+  let total = 0;
+  cart.forEach((item, index) => {
+    const itemTotal = calculateItemPrice(item, item.quantity);
+    total += itemTotal;
+    message += `\n${index + 1}. ${item.name}\n`;
+    message += `   └ Type: ${item.type === 'piece' ? 'À la pièce' : 'Au poids'}\n`;
+    message += `   └ Quantité: ${item.quantity} ${item.type === 'piece' ? 'pièce(s)' : 'x 250g'}\n`;
+    message += `   └ Prix unitaire: ${item.type === 'piece' ? item.price + ' DH' : (item.price / 4).toFixed(2) + ' DH'}\n`;
+    message += `   └ Sous-total: ${itemTotal.toFixed(2)} DH\n`;
+  });
+  
+  message += `\n*RÉSUMÉ DE LA COMMANDE:*\n`;
+  message += `• Total produits: ${total.toFixed(2)} DH\n`;
+  message += `• Frais de livraison: À calculer (selon la distance)\n`;
+  message += `• Total final: À déterminer après calcul des frais\n`;
+
+  const whatsappURL = `https://wa.me/212608975435?text=${encodeURIComponent(message)}`;
+  window.open(whatsappURL, '_blank');
+
+  // Afficher le message de remerciement
+  document.getElementById("cartModalBody").innerHTML = `
+    <div class="thank-you-message">
+      <i class="fas fa-check-circle"></i>
+      <h4>Merci pour votre commande !</h4>
+      <p>Votre commande a été envoyée avec succès.</p>
+      <button class="btn btn-success" onclick="closeCartModal()">OK</button>
+    </div>`;
+
+  // Réinitialiser le formulaire et le panier
+  document.getElementById("orderForm").reset();
+  
+  Swal.fire({
+    icon: 'success',
+    title: 'Commande envoyée !',
+    text: 'Votre commande a été transmise avec succès.',
+    confirmButtonColor: '#28a745',
+    timer: 2000,
+    showConfirmButton: false
+  });
+}
+
+function closeCartModal() {
+  const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+  modal.hide();
+  // Réinitialiser l'affichage du panier pour la prochaine ouverture
+  setTimeout(() => {
+    cart = [];
+    updateCart();
+    updateCartBadge();
+  }, 500);
+}
+
+function filterCategory(cat) {
+  document.querySelectorAll(".product-card").forEach(card => {
+    card.parentElement.style.display = (cat === 'all' || card.dataset.category === cat) ? "" : "none";
+  });
+}
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  const value = this.value.toLowerCase();
+  document.querySelectorAll(".product-card").forEach(card => {
+    card.parentElement.style.display = card.dataset.name.includes(value) ? "" : "none";
+  });
+});
+
+window.onload = () => {
+  displayProducts(products);
+};
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>
-
