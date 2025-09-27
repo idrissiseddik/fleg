@@ -280,6 +280,40 @@
     .footer-contact:hover {
       transform: scale(1.2);
     }
+
+    /* ========== NOUVEAUX STYLES POUR LES CATÉGORIES ========== */
+    /* Couleurs de fond par catégorie */
+    .product-card[data-category="fruit"] {
+      background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+      border-left: 4px solid #e91e63;
+    }
+
+    .product-card[data-category="legume"] {
+      background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+      border-left: 4px solid #4caf50;
+    }
+
+    .product-card[data-category="feculent"] {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border-left: 4px solid #ff9800;
+    }
+
+    .product-card[data-category="epice"] {
+      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+      border-left: 4px solid #9c27b0;
+    }
+
+    .product-card[data-category="piece"] {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border-left: 4px solid #2196f3;
+    }
+
+    /* Ajustement pour garder la lisibilité au survol */
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      border-color: #28a745;
+    }
   </style>
 </head>
 <body>
@@ -358,7 +392,7 @@
           <div class="d-sm-none" id="cartMobileContent"></div>
           <hr>
           <div class="text-end fs-5 fw-bold">
-            <span id="cartTotal">Total : 0 DH</span>
+            <span id="cartTotal">Total : 0.00 DH</span>
           </div>
           <div class="delivery-note text-end">
             <small>* Les frais de livraison seront calculés en fonction de la distance et ne sont pas inclus dans le total.</small>
@@ -481,25 +515,28 @@ const products = [
   
   // Féculents (Nouvelle catégorie)
   { name: 'Pommes de terre', price: 8, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
-  { name: 'Riz', price: 12, img: 'images/feculents.jpg', type: 'weight' },
+  { name: 'Riz', price: 12, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
   { name: 'Pâtes', price: 10, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
   { name: 'Lentilles', price: 15, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
   { name: 'Pois chiches', price: 14, img: 'images/feculents.jpg', category: 'feculent', type: 'weight' },
   
   // Épices
-  { name: 'Poivre Noir', price: 25, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
-  { name: 'Curcuma', price: 18, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
-  { name: 'Cumin', price: 22, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
-  { name: 'Paprika', price: 20, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
-  { name: 'Cannelle', price: 30, img: 'images/epices.jpg', category: 'epice', type: 'weight' },
+  { name: 'Poivre Noir', price: 25, img: 'images/poivrenoirmoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Gingembre', price: 25, img: 'images/gingembremoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Curcuma', price: 18, img: 'images/curcumamoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cumin', price: 22, img: 'images/cuminmoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Piment doux', price: 20, img: 'images/pimentdouxmoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Piment fort', price: 20, img: 'images/pimentfortmoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Coriandre', price: 20, img: 'images/coriandremoulu.jpg', category: 'epice', type: 'weight' },
+  { name: 'Cannelle', price: 30, img: 'images/canellemoulou.jpg', category: 'epice', type: 'weight' },
   
   // Produits à la pièce
   { name: 'Ananas la pièce', price: 21.90, img: 'images/ananas.jpg', category: 'piece', type: 'piece' },
   { name: 'Laitue verte la pièce', price: 6.90, img: 'images/laitue.jpg', category: 'piece', type: 'piece' },
   { name: 'Persil en sachet', price: 4.50, img: 'images/persil.jpg', category: 'piece', type: 'piece' },
   { name: 'Coriandre en sachet', price: 4.50, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' },
-  { name: 'Aubergine', price: 6, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' },
-  { name: 'Poivron', price: 5, img: 'images/coriandre.jpg', category: 'piece', type: 'piece' }
+  { name: 'Safran 1g', price: 39.95, img: 'images/safran.jpg', category: 'piece', type: 'piece' },
+  { name: 'Safran 2g', price: 79.95, img: 'images/safran.jpg', category: 'piece', type: 'piece' }
 ];
 
 let cart = [];
@@ -586,6 +623,16 @@ function calculateItemPrice(product, quantity) {
   }
 }
 
+// Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
+function shuffleArray(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
 function displayProducts(list) {
   const grid = document.getElementById("product-grid");
   grid.innerHTML = "";
@@ -593,7 +640,10 @@ function displayProducts(list) {
   // Déterminer la classe de colonne en fonction du layout
   const colClass = currentLayout === 1 ? 'col-12' : 'col-6';
   
-  list.forEach(p => {
+  // Mélanger aléatoirement les produits
+  const shuffledProducts = shuffleArray([...list]);
+  
+  shuffledProducts.forEach(p => {
     const col = document.createElement("div");
     col.className = `${colClass} col-md-3 col-sm-6`;
     col.innerHTML = `
@@ -729,6 +779,9 @@ function updateCart() {
     
     tableContainer.innerHTML = emptyCartHTML;
     mobileContainer.innerHTML = emptyCartHTML;
+    
+    // REMETTRE LE TOTAL À 0 QUAND LE PANIER EST VIDE
+    document.getElementById("cartTotal").textContent = `Total : 0.00 DH`;
     return;
   }
 
@@ -866,6 +919,8 @@ function clearCart() {
   cart = [];
   updateCart();
   updateCartBadge();
+  // CORRECTION : REMETTRE LE TOTAL À 0 QUAND LE PANIER EST VIDÉ
+  document.getElementById("cartTotal").textContent = `Total : 0.00 DH`;
   Swal.fire({
     icon: 'success',
     title: 'Panier vidé',
@@ -1006,7 +1061,8 @@ function closeThankYouMessage() {
 }
 
 function filterCategory(cat) {
-  document.querySelectorAll(".product-card").forEach(card => {
+  const allProducts = document.querySelectorAll(".product-card");
+  allProducts.forEach(card => {
     card.parentElement.style.display = (cat === 'all' || card.dataset.category === cat) ? "" : "none";
   });
 }
