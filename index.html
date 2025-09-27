@@ -34,6 +34,7 @@
       transition: 0.3s;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       background-color: white;
+      position: relative;
     }
     .product-card:hover {
       transform: translateY(-5px);
@@ -347,6 +348,54 @@
       margin-bottom: 20px;
       border-bottom: 2px solid #dee2e6;
     }
+
+    /* ========== STYLES POUR LE LIBELLÉ DE CATÉGORIE ========== */
+    .category-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: 1.5px solid;
+      z-index: 10;
+    }
+
+    .category-badge.fruit {
+      color: #e91e63;
+      border-color: #e91e63;
+    }
+
+    .category-badge.legume {
+      color: #4caf50;
+      border-color: #4caf50;
+    }
+
+    .category-badge.feculent {
+      color: #ff9800;
+      border-color: #ff9800;
+    }
+
+    .category-badge.epice {
+      color: #9c27b0;
+      border-color: #9c27b0;
+    }
+
+    .category-badge.piece {
+      color: #2196f3;
+      border-color: #2196f3;
+    }
+
+    /* Ajustement de l'espacement pour le badge */
+    .product-card {
+      padding-top: 25px; /* Plus d'espace pour le badge */
+    }
   </style>
 </head>
 <body>
@@ -580,6 +629,18 @@ let cart = [];
 let currentLayout = 2; // 2 produits par ligne par défaut sur mobile
 const phoneNumber = "212608975435";
 
+// Fonction pour obtenir le libellé de catégorie en français
+function getCategoryLabel(category) {
+  const labels = {
+    'fruit': 'Fruit',
+    'legume': 'Légume',
+    'feculent': 'Féculent',
+    'epice': 'Épice',
+    'piece': 'À la pièce'
+  };
+  return labels[category] || category;
+}
+
 // Fonction pour le bouton "Revenir en haut"
 function scrollToTop() {
   window.scrollTo({
@@ -689,6 +750,7 @@ function displayProducts(list) {
     col.className = `${colClass} col-md-3 col-sm-6`;
     col.innerHTML = `
       <div class="product-card" data-name="${p.name.toLowerCase()}" data-category="${p.category}">
+        <div class="category-badge ${p.category}">${getCategoryLabel(p.category)}</div>
         <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200x200/28a745/ffffff?text=${p.name}'">
         <div class="product-name">${p.name}</div>
         <div class="product-type">${getProductTypeText(p)}</div>
